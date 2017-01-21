@@ -13,6 +13,7 @@ public class JettyLauncher {
         InetSocketAddress address = null;
         String contextPath = "/";
         boolean forceHttps = false;
+        boolean contextPersistTmpDirectory = false;
 
         for(String arg: args) {
             if(arg.startsWith("--") && arg.contains("=")) {
@@ -29,6 +30,8 @@ public class JettyLauncher {
                         }
                     } else if(dim[0].equals("--gitbucket.home")){
                         System.setProperty("gitbucket.home", dim[1]);
+                    } else if(dim[0].equals("--persist_tmp_directory") && (dim[1].equals("1") || dim[1].equals("true"))){
+                        contextPersistTmpDirectory = true;
                     }
                 }
             }
@@ -58,6 +61,7 @@ public class JettyLauncher {
             tmpDir.mkdirs();
         }
         context.setTempDirectory(tmpDir);
+        context.setPersistTempDirectory(contextPersistTmpDirectory);
 
         ProtectionDomain domain = JettyLauncher.class.getProtectionDomain();
         URL location = domain.getCodeSource().getLocation();
